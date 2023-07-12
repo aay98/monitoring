@@ -1,0 +1,27 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - '*'
+
+jobs:
+  deploy:
+    # Если мы успешно собрали контейнер и отправили в registry, то делаем хук деплоймент серверу
+    # Попробуем готовый экшен curl из маркетплэйса
+    needs: build_and_pub
+    runs-on: ubuntu-latest
+    steps:
+    - name: Deploy using ssh
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.DOCKER_LOGIN }}
+        key: ${{ secrets.PRIVATE_KEY }}
+        port: 22
+        script: |
+          cd /home/aay98/ci-cd-gen
+          docker-compose down
+          git pull
+          git reset --hard HEAD
+          docker-compose up --build -d 
