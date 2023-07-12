@@ -7,9 +7,6 @@ on:
 
 jobs:
   deploy:
-    # Если мы успешно собрали контейнер и отправили в registry, то делаем хук деплоймент серверу
-    # Попробуем готовый экшен curl из маркетплэйса
-    needs: build_and_pub
     runs-on: ubuntu-latest
     steps:
     - name: Deploy using ssh
